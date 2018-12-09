@@ -1,0 +1,21 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Meal planner"
+        }
+      }
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U",
+          "sourceDir": "lambda\\us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U"
+        },
+        "interfaces": []
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}
