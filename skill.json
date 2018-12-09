@@ -16,6 +16,14 @@
         "interfaces": []
       }
     },
-    "manifestVersion": "1.0"
+    "manifestVersion": "1.0",
+    "permissions": [
+      {
+        "name": "alexa::household:lists:read"
+      },
+      {
+        "name": "alexa::household:lists:write"
+      }
+    ]
   }
 }
