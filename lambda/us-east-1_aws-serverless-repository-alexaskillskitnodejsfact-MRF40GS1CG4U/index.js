@@ -2,6 +2,8 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk');
+const Utils = require('utilities');
+const Request = require('request');
 
 const listIsEmpty = '#list_is_empty#';
 
@@ -59,6 +61,31 @@ const HelpIntentHandler = {
       .getResponse();
   },
 };
+
+const AddDishIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'AddDishIntentHandler';
+  },
+  handle(handlerInput) {
+    var dish = handlerInput.requestEnvelope.request.intent.slots.dish.value;
+    var appID = Utils.getAppID();
+    var appKey = Utils.getAppKey();
+    var apiPath = Utils.getApiPath();
+
+    var dishUri = Utils.createUri(dish,apiPath,appID,appKey); 
+
+    Request(dishUri, { json: true }, (err, res, body) => {
+      if (err) { return console.log(err); }
+      console.log(body.q);
+      console.log(body);
+    });
+
+    return handlerInput.responseBuilder
+      .speak(dish)
+      .getResponse();
+  },
+}
 
 const CancelAndStopIntentHandler = {
   canHandle(handlerInput) {
@@ -224,6 +251,7 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     HelloWorldIntentHandler,
     TopToDoHandler,
+    AddDishIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler

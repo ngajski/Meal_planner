@@ -1,10 +1,10 @@
 'use strict';
 
-function getApiKey() {
+function getAppKey() {
 	return '0d12679d81b972f4f143f006ef3e2217';	
 }
 
-function getApiID() {
+function getAppID() {
 	return 'c0991d62';
 }
 
@@ -22,8 +22,8 @@ function createUri(dish,uriBasic,apiID,appKey) {
 }
 
 module.exports = {
-    'getApiKey': getApiKey,
-    'getApiID': getApiID,
+    'getAppKey': getAppKey,
+    'getAppID': getAppID,
     'getApiPath': getApiPath,
     'createUri': createUri
 };
