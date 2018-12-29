@@ -1,52 +1,58 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "meal planner",
-      "intents": [
-        {
-          "name": "AMAZON.FallbackIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.NavigateHomeIntent",
-          "samples": []
-        },
-        {
-          "name": "HelloWorldIntent",
-          "slots": [],
-          "samples": [
-            "hello planner",
-            "hello"
-          ]
-        },
-        {
-          "name": "TopToDoIntent",
-          "slots": [],
-          "samples": [
-            "what is my top todo",
-            "what is my top to do",
-            "top todo",
-            "top to do",
-            "my top todo",
-            "my top to do",
-            "stop todo",
-            "stop to do"
-          ]
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "meal planner",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "TopToDoIntent",
+                    "slots": [],
+                    "samples": [
+                        "what is my top todo",
+                        "what is my top to do",
+                        "top todo",
+                        "top to do",
+                        "my top todo",
+                        "my top to do",
+                        "stop todo",
+                        "stop to do"
+                    ]
+                },
+                {
+                    "name": "AddDishIntent",
+                    "slots": [
+                        {
+                            "name": "dish",
+                            "type": "AMAZON.Food"
+                        }
+                    ],
+                    "samples": [
+                        "i want {dish}",
+                        "i would like to eat {dish}",
+                        "i want to eat {dish}"
+                    ]
+                }
+            ],
+            "types": []
         }
-      ],
-      "types": []
     }
-  }
 }
