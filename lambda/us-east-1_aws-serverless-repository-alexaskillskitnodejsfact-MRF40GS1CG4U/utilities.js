@@ -25,5 +25,5 @@ module.exports = {
     'getAppKey': getAppKey,
     'getAppID': getAppID,
     'getApiPath': getApiPath,
-    'createUri': createUri
+    'createUri': createUri,
 };

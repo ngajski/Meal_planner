@@ -1,6 +1,7 @@
 /* eslint-disable  func-names */
 /* eslint-disable  no-console */
 
+
 const Alexa = require('ask-sdk');
 const Utils = require('utilities');
 const Request = require('request');
@@ -37,25 +38,65 @@ const AddDishIntentHandler = {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
       && handlerInput.requestEnvelope.request.intent.name === 'AddDishIntent';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     var dish = handlerInput.requestEnvelope.request.intent.slots.dish.value;
     var appID = Utils.getAppID();
     var appKey = Utils.getAppKey();
     var apiPath = Utils.getApiPath();
 
-    var dishUri = Utils.createUri(dish,apiPath,appID,appKey); 
+    var dishUri = Utils.createUri(dish, apiPath, appID, appKey);
 
-    Request(dishUri, { json: true }, (err, res, body) => {
-      if (err) { return console.log(err); }
+    /**
+      Request(dishUri, {json: true}, (err, res, body) => {
+      if (err) {
+        return console.log(err);
+      }
       console.log(body.q);
       console.log(body);
     });
+     **/
+
+    console.log("Starting addToList");
+    var stat = await addToList(handlerInput,dish);
+    console.log(stat);
 
     return handlerInput.responseBuilder
-      .speak(dish)
+        .speak(dish)
+        .getResponse();
+  },
+};
+
+const TopToDoHandler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' && request.intent.name === 'TopToDoIntent';
+  },
+  async handle(handlerInput) {
+    const responseBuilder = handlerInput.responseBuilder;
+
+    let speechOutput;
+    console.log('Starting top todo handler');
+    const itemName = await getTopToDoItem(handlerInput);
+    if (!itemName) {
+      speechOutput = 'Alexa List permissions are missing. You can grant permissions within the Alexa app.';
+      const permissions = ['read::alexa:household:list'];
+      return responseBuilder
+        .speak(speechOutput)
+        .withAskForPermissionsConsentCard(permissions)
+        .getResponse();
+    } else if (itemName === listIsEmpty) {
+      speechOutput = 'Your todo list is empty.';
+      return responseBuilder
+        .speak(speechOutput)
+        .getResponse();
+    }
+    speechOutput = 'Your top todo is ${itemName}.';
+
+    return responseBuilder
+      .speak('Success')
       .getResponse();
   },
-}
+};
 
 const HelpIntentHandler = {
   canHandle(handlerInput) {
@@ -106,6 +147,7 @@ const ErrorHandler = {
   },
   handle(handlerInput, error) {
     console.log(`Error handled: ${error.message}`);
+    console.log(`Error handled: ${error}`);
 
     return handlerInput.responseBuilder
       .speak('Sorry, I can\'t understand the command. Please say again.')
@@ -114,45 +156,12 @@ const ErrorHandler = {
   },
 };
 
-const TopToDoHandler = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest' && request.intent.name === 'TopToDoIntent';
-  },
-  async handle(handlerInput) {
-    const responseBuilder = handlerInput.responseBuilder;
-
-    let speechOutput;
-    console.log('Starting top todo handler');
-    const itemName = await getTopToDoItem(handlerInput);
-    if (!itemName) {
-      speechOutput = 'Alexa List permissions are missing. You can grant permissions within the Alexa app.';
-      const permissions = ['read::alexa:household:list'];
-      return responseBuilder
-        .speak(speechOutput)
-        .withAskForPermissionsConsentCard(permissions)
-        .getResponse();
-    } else if (itemName === listIsEmpty) {
-      speechOutput = 'Your todo list is empty.';
-      return responseBuilder
-        .speak(speechOutput)
-        .getResponse();
-    }
-    speechOutput = `Your top todo is ${itemName}.  To mark it as complete, say complete my to do.`;
-    const speechReprompt = 'Say complete my to do to mark it complete.';
-    return responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechReprompt)
-      .getResponse();
-  },
-};
-
 // helpers
-
 /**
 * List API to retrieve the customer to-do list.
 */
-async function getToDoListId(handlerInput) {
+
+async function getListId(handlerInput,listEndsWith) {
   // check session attributes to see if it has already been fetched
   const attributesManager = handlerInput.attributesManager;
   const sessionAttributes = attributesManager.getSessionAttributes();
@@ -170,11 +179,9 @@ async function getToDoListId(handlerInput) {
       console.log(`found ${listOfLists.lists[i].name} with id ${listOfLists.lists[i].listId}`);
       const decodedListId = Buffer.from(listOfLists.lists[i].listId, 'base64').toString('utf8');
       console.log(`decoded listId: ${decodedListId}`);
-      // The default lists (To-Do and Shopping List) list_id values are base-64 encoded strings with these formats:
       //  <Internal_identifier>-TASK for the to-do list
-      //  <Internal_identifier>-SHOPPING_LIST for the shopping list
-      // Developers can base64 decode the list_id value and look for the specified string at the end. This string is constant and agnostic to localization.
-      if (decodedListId.endsWith('-TASK')) {
+      //  <Internal_identifier>-SHOPPING_ITEM for the shopping list
+      if (decodedListId.endsWith(listEndsWith)) {
         // since we're looking for the default to do list, it's always present and always active
         listId = listOfLists.lists[i].listId;
         break;
@@ -186,12 +193,37 @@ async function getToDoListId(handlerInput) {
   return listId; // sessionAttributes.todoListId;
 }
 
+async function addToList(handlerInput,item) {
+  console.log("addToList: starting");
+
+  const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
+  const listId = await getListId(handlerInput,'ITEM');
+  const list = await listClient.getList(listId, listStatuses.ACTIVE);
+
+  if (!list) {
+    console.log("addToList: List doesn't exist!");
+    return null;
+  } else if (!list.items || list.items.length === 0) {
+    console.log("addToList: List is empty!");
+    return (listIsEmpty);
+  }
+  console.log("Trying to add: " + item);
+  const updateRequest = {
+    value: item,
+    status: listStatuses.ACTIVE,
+  };
+
+
+  var status = listClient.createListItem(listId, updateRequest);
+  console.log(status);
+}
+
 /**
 * Helper function to retrieve the top to-do item.
 */
 async function getTopToDoItem(handlerInput) {
   const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
-  const listId = await getToDoListId(handlerInput);
+  const listId = await getListId(handlerInput,'ITEM');
   console.log(`listid: ${listId}`);
   const list = await listClient.getList(listId, listStatuses.ACTIVE);
   if (!list) {
@@ -205,13 +237,15 @@ async function getTopToDoItem(handlerInput) {
   return list.items[0].value;
 }
 
+
+
 /**
 * List API to delete the top todo item.
 */
 async function completeTopToDoAction(handlerInput) {
   const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
   // get the list
-  const listId = await getToDoListId(handlerInput);
+  const listId = await getListId(handlerInput,'ITEM');
   const list = await listClient.getList(listId, listStatuses.ACTIVE);
   // if the list doesn't exist, no permissions or has no items
   if (!list) {
