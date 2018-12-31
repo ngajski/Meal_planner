@@ -44,26 +44,32 @@ const AddDishIntentHandler = {
     var apiPath = Utils.getApiPath();
 
     var dishUri = Utils.createUri(dish, apiPath, appID, appKey);
+    console.log('DishUri: ' + dishUri);
 
     Request(dishUri, {json: true}, (err, res, body) => {
       if (err) {
         console.log(err);
         return err;
       }
+      //console.log('API req: ' + body.q);
+      var recipes = body.hits;
+      console.log('Recipes: ' + recipes);
+      var ingredientes = Utils.getIngredients(recipes[0]);
+      //console.log(ingredientes);
 
-      console.log('API req: ' + body.q);
-
-      try {
-        addToList(handlerInput,dish);
-        console.log('Success');
-      } catch (e) {
-        console.log('Didnt add: ' + e);
+      for (let i = 0; i < ingredientes.length; i++) {
+        try {
+          addToList(handlerInput,ingredientes[i]);
+          console.log('Success!');
+        } catch (e) {
+          console.log('Didnt add: ' + ingredientes[i] + ' ' + e);
+        }
       }
     });
 
     // await addToList(handlerInput,dish);
     return handlerInput.responseBuilder
-        .speak(dish + ' added')
+        .speak('Ingredients added!')
         .getResponse();
 
   },

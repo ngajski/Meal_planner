@@ -18,8 +18,17 @@ function createUri(dish,uriBasic,apiID,appKey) {
 	uri = uriBasic + "?q=" + dish + "&"; 
 	uri = uri + "app_id=" + apiID + "&";
 	uri = uri + "app_key=" + appKey;
-	return 'https://api.edamam.com/search?q=pizza&app_id=c0991d62&app_key=0d12679d81b972f4f143f006ef3e2217';
-	//return uri;
+	//return 'https://api.edamam.com/search?q=pizza&app_id=c0991d62&app_key=0d12679d81b972f4f143f006ef3e2217';
+	return uri;
+}
+
+function getIngredients(recipe) {
+    var ingredients = [];
+    console.log("Recipe:" + recipe);
+    for (let i = 0; i < recipe.recipe.ingredients.length; i++) {
+        ingredients.push(recipe.recipe.ingredients[i].text);
+    }
+    return ingredients;
 }
 
 module.exports = {
@@ -27,4 +36,5 @@ module.exports = {
     'getAppID': getAppID,
     'getApiPath': getApiPath,
     'createUri': createUri,
+    'getIngredients': getIngredients
 };
