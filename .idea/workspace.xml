@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" line="188" mnemonic="7" />
+    <bookmark url="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" line="194" mnemonic="7" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="531826c6-7e62-4bd3-94b4-5084879dd521" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.ask/config" beforeDir="false" afterPath="$PROJECT_DIR$/.ask/config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js" afterDir="false" />
     </list>
@@ -24,8 +23,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="552">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="184">
+              <caret line="41" column="33" lean-forward="true" selection-start-line="41" selection-start-column="33" selection-end-line="41" selection-end-column="33" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#462#511#0" />
@@ -43,8 +42,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="23">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="506">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
             </state>
           </provider>
         </entry>
@@ -62,9 +61,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="345" />
-    <option name="y" value="-11" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-130" />
+    <option name="y" value="132" />
     <option name="width" value="1294" />
     <option name="height" value="1407" />
   </component>
@@ -132,12 +131,12 @@
       <updated>1546106255378</updated>
       <workItem from="1546106260124" duration="3862000" />
       <workItem from="1546172936606" duration="6232000" />
-      <workItem from="1546258916429" duration="2385000" />
+      <workItem from="1546258916429" duration="4921000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12479000" />
+    <option name="totallyTimeSpent" value="15015000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -184,33 +183,21 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js</url>
-          <line>146</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/models/en-US.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="506">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="552">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="184">
+          <caret line="41" column="33" lean-forward="true" selection-start-line="41" selection-start-column="33" selection-end-line="41" selection-end-column="33" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#462#511#0" />
