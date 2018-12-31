@@ -32,7 +32,6 @@ const LaunchRequestHandler = {
   },
 };
 
-
 const AddDishIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -46,23 +45,27 @@ const AddDishIntentHandler = {
 
     var dishUri = Utils.createUri(dish, apiPath, appID, appKey);
 
-    /**
-      Request(dishUri, {json: true}, (err, res, body) => {
+    Request(dishUri, {json: true}, (err, res, body) => {
       if (err) {
-        return console.log(err);
+        console.log(err);
+        return err;
       }
-      console.log(body.q);
-      console.log(body);
+
+      console.log('API req: ' + body.q);
+
+      try {
+        addToList(handlerInput,dish);
+        console.log('Success');
+      } catch (e) {
+        console.log('Didnt add: ' + e);
+      }
     });
-     **/
 
-    console.log("Starting addToList");
-    var stat = await addToList(handlerInput,dish);
-    console.log(stat);
-
+    // await addToList(handlerInput,dish);
     return handlerInput.responseBuilder
-        .speak(dish)
+        .speak(dish + ' added')
         .getResponse();
+
   },
 };
 
@@ -157,10 +160,6 @@ const ErrorHandler = {
 };
 
 // helpers
-/**
-* List API to retrieve the customer to-do list.
-*/
-
 async function getListId(handlerInput,listEndsWith) {
   // check session attributes to see if it has already been fetched
   const attributesManager = handlerInput.attributesManager;
@@ -213,14 +212,10 @@ async function addToList(handlerInput,item) {
     status: listStatuses.ACTIVE,
   };
 
+  listClient.createListItem(listId, updateRequest);
 
-  var status = listClient.createListItem(listId, updateRequest);
-  console.log(status);
 }
 
-/**
-* Helper function to retrieve the top to-do item.
-*/
 async function getTopToDoItem(handlerInput) {
   const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
   const listId = await getListId(handlerInput,'ITEM');
@@ -235,33 +230,6 @@ async function getTopToDoItem(handlerInput) {
   }
   console.log(`list item found: ${list.items[0].value} with id: ${list.items[0].id}`);
   return list.items[0].value;
-}
-
-
-
-/**
-* List API to delete the top todo item.
-*/
-async function completeTopToDoAction(handlerInput) {
-  const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
-  // get the list
-  const listId = await getListId(handlerInput,'ITEM');
-  const list = await listClient.getList(listId, listStatuses.ACTIVE);
-  // if the list doesn't exist, no permissions or has no items
-  if (!list) {
-    return null;
-  } else if (!list.items || list.items.length === 0) {
-    return (listIsEmpty);
-  }
-
-  // get first item
-  const item = list.items[0];
-  const updateRequest = {
-    value: item.value,
-    status: listStatuses.COMPLETED,
-    version: item.version,
-  };
-  return listClient.updateListItem(listId, item.id, updateRequest);
 }
 
 //exports

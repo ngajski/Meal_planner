@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" line="189" mnemonic="7" />
+    <bookmark url="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" line="188" mnemonic="7" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="531826c6-7e62-4bd3-94b4-5084879dd521" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ask/config" beforeDir="false" afterPath="$PROJECT_DIR$/.ask/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js" afterDir="false" />
     </list>
@@ -24,14 +24,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="216" column="64" selection-start-line="216" selection-start-column="64" selection-end-line="216" selection-end-column="64" />
+            <state relative-caret-position="552">
+              <caret line="59" selection-start-line="59" selection-end-line="59" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <element signature="e#2857#3305#0" />
-                <element signature="e#3343#3825#0" />
-                <element signature="e#3863#4159#0" />
-                <element signature="n#!!block;n#getTopToDoItem#0" />
+                <element signature="e#462#511#0" />
+                <element signature="e#543#874#0" />
+                <element signature="e#1806#2838#0" />
+                <element signature="e#2867#3315#0" />
+                <element signature="e#3353#3835#0" />
+                <element signature="e#3873#4169#0" />
+                <element signature="e#4193#4581#0" />
               </folding>
             </state>
           </provider>
@@ -40,8 +43,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="644">
-              <caret line="28" selection-start-line="28" selection-end-line="28" />
+            <state relative-caret-position="23">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
             </state>
           </provider>
         </entry>
@@ -60,10 +63,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="502" />
+    <option name="x" value="345" />
     <option name="y" value="-11" />
-    <option name="width" value="1400" />
-    <option name="height" value="1000" />
+    <option name="width" value="1294" />
+    <option name="height" value="1407" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -71,6 +74,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -98,7 +102,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -128,19 +131,20 @@
       <option name="presentableId" value="Default" />
       <updated>1546106255378</updated>
       <workItem from="1546106260124" duration="3862000" />
-      <workItem from="1546172936606" duration="2742000" />
+      <workItem from="1546172936606" duration="6232000" />
+      <workItem from="1546258916429" duration="2385000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6604000" />
+    <option name="totallyTimeSpent" value="12479000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49960223" visible="true" weight="0.28762805" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49960223" visible="true" weight="0.21670607" />
       <window_info id="Structure" order="2" sideWeight="0.5003978" side_tool="true" weight="0.13396375" />
       <window_info anchor="bottom" id="Terminal" order="0" />
       <window_info anchor="bottom" id="Event Log" order="1" side_tool="true" />
@@ -180,27 +184,42 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js</url>
+          <line>146</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/models/en-US.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/utilities.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
+        <state relative-caret-position="23">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="216" column="64" selection-start-line="216" selection-start-column="64" selection-end-line="216" selection-end-column="64" />
+        <state relative-caret-position="552">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#2857#3305#0" />
-            <element signature="e#3343#3825#0" />
-            <element signature="e#3863#4159#0" />
-            <element signature="n#!!block;n#getTopToDoItem#0" />
+            <element signature="e#462#511#0" />
+            <element signature="e#543#874#0" />
+            <element signature="e#1806#2838#0" />
+            <element signature="e#2867#3315#0" />
+            <element signature="e#3353#3835#0" />
+            <element signature="e#3873#4169#0" />
+            <element signature="e#4193#4581#0" />
           </folding>
         </state>
       </provider>
