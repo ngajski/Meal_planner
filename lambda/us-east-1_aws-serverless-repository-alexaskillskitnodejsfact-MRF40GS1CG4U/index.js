@@ -3,17 +3,11 @@
 
 
 const Alexa = require('ask-sdk');
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const Utils = require('utilities');
 const Request = require('request');
 
+//var constants = require('./constants');
 const listIsEmpty = '#list_is_empty#';
-
-const welcomeOutput = 'Welcome. You can say, top todo';
-const welcomeReprompt = 'You can say, top todo';
-const helpOutput = 'You can say top todo or cancel top todo.';
-const helpReprompt = 'Say top todo or cancel top todo.';
 
 const listStatuses = {
   ACTIVE: 'active',
@@ -24,31 +18,21 @@ const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const speechText = 'Say i want to eat some dish!';
-    
-    const dynamodbParams = {
-      TableName: 'Test',
-      Item: {
-        id: '2',
-        name: 'drek2'
-      },
-    };
+    const attributesManager = handlerInput.attributesManager;
 
-  console.log('Attempting to add expense', dynamodbParams);  
-    
-  dynamoDb.put(dynamodbParams).promise()
-  .then(data => {
-    console.log('expense saved: ', dynamodbParams);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+    const attributes =  await attributesManager.getPersistentAttributes() || {};
+    if (Object.keys(attributes).length === 0) {
+      attributes['question_nr'] = 0
 
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt('Would you like to eat something?')
-      .getResponse();
+      attributesManager.setSessionAttributes(attributes);
+
+      return handlerInput.responseBuilder
+        .speak('Before we start, I have to ask you a few questions. Is that OK?')
+        .reprompt('Everything alright?')
+        .getResponse();
+    }
   },
 };
 
@@ -66,7 +50,7 @@ const AddDishIntentHandler = {
     var dishUri = Utils.createUri(dish, apiPath, appID, appKey);
     console.log('DishUri: ' + dishUri);
 
-    Request(dishUri, {json: true}, (err, res, body) => {
+    Request(dishUri, { json: true }, (err, res, body) => {
       if (err) {
         console.log(err);
         return err;
@@ -79,7 +63,7 @@ const AddDishIntentHandler = {
 
       for (let i = 0; i < ingredientes.length; i++) {
         try {
-          addToList(handlerInput,ingredientes[i]);
+          addToList(handlerInput, ingredientes[i]);
           console.log('Success!');
         } catch (e) {
           console.log('Didnt add: ' + ingredientes[i] + ' ' + e);
@@ -89,8 +73,8 @@ const AddDishIntentHandler = {
 
     // await addToList(handlerInput,dish);
     return handlerInput.responseBuilder
-        .speak('Ingredients added!')
-        .getResponse();
+      .speak('Ingredients added!')
+      .getResponse();
 
   },
 };
@@ -149,13 +133,17 @@ const CancelAndStopIntentHandler = {
       && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
         || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const speechText = 'Goodbye!';
+
+    
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+    attributesManager.setPersistentAttributes(sessionAttributes);
+    await attributesManager.savePersistentAttributes();
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Hello World', speechText)
-      .getResponse();
   },
 };
 
@@ -186,7 +174,7 @@ const ErrorHandler = {
 };
 
 // helpers
-async function getListId(handlerInput,listEndsWith) {
+async function getListId(handlerInput, listEndsWith) {
   // check session attributes to see if it has already been fetched
   const attributesManager = handlerInput.attributesManager;
   const sessionAttributes = attributesManager.getSessionAttributes();
@@ -218,11 +206,11 @@ async function getListId(handlerInput,listEndsWith) {
   return listId; // sessionAttributes.todoListId;
 }
 
-async function addToList(handlerInput,item) {
+async function addToList(handlerInput, item) {
   console.log("addToList: starting");
 
   const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
-  const listId = await getListId(handlerInput,'ITEM');
+  const listId = await getListId(handlerInput, 'ITEM');
   const list = await listClient.getList(listId, listStatuses.ACTIVE);
 
   if (!list) {
@@ -244,7 +232,7 @@ async function addToList(handlerInput,item) {
 
 async function getTopToDoItem(handlerInput) {
   const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
-  const listId = await getListId(handlerInput,'ITEM');
+  const listId = await getListId(handlerInput, 'ITEM');
   console.log(`listid: ${listId}`);
   const list = await listClient.getList(listId, listStatuses.ACTIVE);
   if (!list) {
@@ -259,7 +247,8 @@ async function getTopToDoItem(handlerInput) {
 }
 
 //exports
-const skillBuilder = Alexa.SkillBuilders.custom();
+//.custom()
+const skillBuilder = Alexa.SkillBuilders.standard();
 exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
@@ -270,5 +259,6 @@ exports.handler = skillBuilder
     SessionEndedRequestHandler
   )
   .addErrorHandlers(ErrorHandler)
-  .withApiClient(new Alexa.DefaultApiClient())
+  .withTableName('FoodPreferences')
+  .withAutoCreateTable(true)
   .lambda();

@@ -36,5 +36,5 @@ module.exports = {
     'getAppID': getAppID,
     'getApiPath': getApiPath,
     'createUri': createUri,
-    'getIngredients': getIngredients
+    'getIngredients': getIngredients,
 };
