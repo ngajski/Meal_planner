@@ -3,6 +3,8 @@
 
 
 const Alexa = require('ask-sdk');
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const Utils = require('utilities');
 const Request = require('request');
 
@@ -24,10 +26,28 @@ const LaunchRequestHandler = {
   },
   handle(handlerInput) {
     const speechText = 'Say i want to eat some dish!';
+    
+    const dynamodbParams = {
+      TableName: 'Test',
+      Item: {
+        id: '2',
+        name: 'drek2'
+      },
+    };
+
+  console.log('Attempting to add expense', dynamodbParams);  
+    
+  dynamoDb.put(dynamodbParams).promise()
+  .then(data => {
+    console.log('expense saved: ', dynamodbParams);
+  })
+  .catch(err => {
+    console.error(err);
+  });
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .reprompt('Would you like another fact?')
+      .reprompt('Would you like to eat something?')
       .getResponse();
   },
 };
