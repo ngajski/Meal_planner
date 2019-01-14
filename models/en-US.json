@@ -24,20 +24,6 @@
                     "samples": []
                 },
                 {
-                    "name": "TopToDoIntent",
-                    "slots": [],
-                    "samples": [
-                        "what is my top todo",
-                        "what is my top to do",
-                        "top todo",
-                        "top to do",
-                        "my top todo",
-                        "my top to do",
-                        "stop todo",
-                        "stop to do"
-                    ]
-                },
-                {
                     "name": "AddDishIntent",
                     "slots": [
                         {
@@ -48,7 +34,62 @@
                     "samples": [
                         "i want {dish}",
                         "i would like to eat {dish}",
-                        "i want to eat {dish}"
+                        "i want to eat {dish}",
+                        "i like {dish}",
+                        "{dish}"        
+                    ]
+                },
+                {
+                    "name": "AvoidIngredientIntent",
+                    "slots": [
+                        {
+                            "name": "ingredient",
+                            "type": "AMAZON.Food"
+                        }
+                    ],
+                    "samples": [
+                        "i hate {ingredient}",
+                        "i hate {ingredient} and {ingredient}",
+                        "i do not like {ingredient}",
+                        "i don't like {ingredient}",
+                        "i do not want to eat {ingredient}",
+                        "i don't want to eat {ingredient}"
+                    ]
+                },
+                {
+                    "name": "ResetPreferencesIntent",
+                    "samples": [
+                        "reset",
+                        "reset my preferences",
+                        "reset preferences",
+                        "delete my preferences",
+                        "delete",
+                        "delete preferences",
+                        "reset progress",
+                        "delete progress",
+                        "resete app",
+                        "delete app",
+                        "restart",
+                        "restart my preferences",
+                        "testart preferences",
+                        "modify",
+                        "modify my preferences",
+                        "modify preferences"                       
+                    ]
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": [
+                        "yes i do",
+                        "yes i am"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": [
+                        "no i do not",
+                        "no i don't",
+                        "no i am not"
                     ]
                 }
             ],

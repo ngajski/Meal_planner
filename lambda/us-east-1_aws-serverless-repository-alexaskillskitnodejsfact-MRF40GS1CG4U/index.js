@@ -3,11 +3,10 @@
 
 
 const Alexa = require('ask-sdk');
-const Utils = require('utilities');
-const Request = require('request');
+const Utils = require('./utilities');
+const Math = require('mathjs')
 
-//var constants = require('./constants');
-const listIsEmpty = '#list_is_empty#';
+var C = require('./constants');
 
 const listStatuses = {
   ACTIVE: 'active',
@@ -19,21 +18,131 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   async handle(handlerInput) {
-    const speechText = 'Say i want to eat some dish!';
+    var question = '';
     const attributesManager = handlerInput.attributesManager;
 
-    const attributes =  await attributesManager.getPersistentAttributes() || {};
-    if (Object.keys(attributes).length === 0) {
-      attributes['question_nr'] = 0
+    const attributes = await attributesManager.getPersistentAttributes() || {};
+    console.log(attributes);
+    if (Object.keys(attributes).length === 0 || attributes[C.RESET] == C.YES) {
+      var welcomeMsg = 'Hi, welcome to the Meal planner. All you recepies will be visible in the Alexa app. ';
+      welcomeMsg += 'Before we start, I have to ask you a few questions. ';
 
+      question = C.QUESTIONS[0];
+
+      attributes[C.QUESTION_NR] = 0;
+      attributes[C.RESET] = C.NO;
       attributesManager.setSessionAttributes(attributes);
 
       return handlerInput.responseBuilder
-        .speak('Before we start, I have to ask you a few questions. Is that OK?')
-        .reprompt('Everything alright?')
+        .speak(welcomeMsg + question)
+        .reprompt(question)
+        .getResponse();
+
+    } else if (attributes[C.QUESTION_NR] < C.QUESTION_TOTAL) {
+      attributesManager.setSessionAttributes(attributes);
+      var question_nr = attributes[C.QUESTION_NR];
+      question = C.QUESTIONS[question_nr];
+
+      return handlerInput.responseBuilder
+        .speak('Just few questions to go. ' + question)
+        .reprompt(question)
+        .getResponse();
+    } else {
+      attributesManager.setSessionAttributes(attributes);
+
+      question = 'Please tell me what do you want to eat?'
+      var question2 = 'Do you want to eat something?'
+      return handlerInput.responseBuilder
+        .speak(question)
+        .reprompt(question2)
         .getResponse();
     }
   },
+};
+
+const YesNoIntentHandler = {
+  canHandle(handlerInput) {
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+    const question_nr = sessionAttributes[C.QUESTION_NR];
+
+    return (question_nr <= C.QUESTION_TOTAL) && handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent'
+        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.NoIntent');
+  },
+  async handle(handlerInput) {
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    var answer = '';
+    if (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent') answer = C.YES;
+    else answer = C.NO;
+
+    var question = '';
+    var question_nr = sessionAttributes[C.QUESTION_NR]
+    if (question_nr == "0") {
+      sessionAttributes[C.VEGETARIAN] = answer;
+      question = C.QUESTIONS[1];
+    } else if (question_nr == "1") {
+      sessionAttributes[C.VEGAN] = answer;
+      question = C.QUESTIONS[2];
+    } else if (question_nr == "2") {
+      if (answer == C.YES) { sessionAttributes[C.ALCHOHOL_FREE] = C.NO; }
+      else { sessionAttributes[C.ALCHOHOL_FREE] = C.YES; }
+      question = C.QUESTIONS[3];
+    } else if (question_nr == "3") {
+      sessionAttributes[C.NUTS_FREE] = answer;
+      question = C.QUESTIONS[4];
+    } else if (question_nr == "4") {
+      sessionAttributes[C.SUGAR_LESS] = answer;
+      question = C.QUESTIONS[5];
+    } else if (question_nr == "5") {
+      sessionAttributes[C.PEANUTS_FREE] = answer;
+      question = C.QUESTIONS[6];
+    } else if (question_nr == "6") {
+      sessionAttributes[C.FEEL_LUCKY] = answer;
+      question = C.QUESTIONS[7];
+    } else if (question_nr == "7") {
+        if (answer == C.NO) question = 'What do you want to eat?';
+        else question = 'What do you not like?'; 
+    }
+
+    sessionAttributes[C.QUESTION_NR] += 1;
+
+    attributesManager.setPersistentAttributes(sessionAttributes);
+    await attributesManager.savePersistentAttributes();
+
+    return handlerInput.responseBuilder
+      .speak(question)
+      .reprompt(question)
+      .getResponse();
+  },
+};
+
+const DontEatIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'AvoidIngredientIntent';
+  },
+  async handle(handlerInput) {
+    var ingredient = handlerInput.requestEnvelope.request.intent.slots.ingredient.value;
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttr = attributesManager.getSessionAttributes();
+
+    var ingredients = ingredient.split('and');
+    sessionAttr[C.EXCLUDED] = ingredients;
+
+    attributesManager.setPersistentAttributes(sessionAttr);
+    await attributesManager.savePersistentAttributes();
+
+    console.log(ingredients);
+    const question = 'Ok. I am ready. What do you want to eat?'
+
+    return handlerInput.responseBuilder
+      .speak(question)
+      .reprompt(question)
+      .getResponse()
+  }
 };
 
 const AddDishIntentHandler = {
@@ -43,71 +152,65 @@ const AddDishIntentHandler = {
   },
   async handle(handlerInput) {
     var dish = handlerInput.requestEnvelope.request.intent.slots.dish.value;
-    var appID = Utils.getAppID();
-    var appKey = Utils.getAppKey();
-    var apiPath = Utils.getApiPath();
 
-    var dishUri = Utils.createUri(dish, apiPath, appID, appKey);
-    console.log('DishUri: ' + dishUri);
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttr = attributesManager.getSessionAttributes();
 
-    Request(dishUri, { json: true }, (err, res, body) => {
-      if (err) {
-        console.log(err);
-        return err;
+    var appID = C.APP_ID;
+    var appKey = C.APP_KEY;
+
+    var searchQuery = Utils.createApiQuery(dish, appID, appKey, sessionAttr);
+    console.log('DishUri: ' + searchQuery);
+
+    const response = await Utils.httpGet(C.API_PATH,searchQuery);
+    var recipes = response.hits;
+    const noOfRecipes = recipes.length;
+    var index = 0;
+
+    console.log('number of: ' + noOfRecipes);
+    if (sessionAttr[C.FEEL_LUCKY] == C.YES) index =  Math.floor(Math.random(0,noOfRecipes));
+    console.log('index = ' + index);
+
+    var ingredientes = Utils.getIngredients(recipes[index]); 
+    var recipeLabel = Utils.getLabel(recipes[index]);
+    var recipeUrl = Utils.getUrl(recipes[index]);
+    
+    for (let i = 0; i < ingredientes.length; i++) {
+      try {
+        addToList(handlerInput, ingredientes[i],recipeLabel);
+      } catch (e) {
+        console.log('Didnt add: ' + ingredientes[i] + ' ' + e);
       }
-      //console.log('API req: ' + body.q);
-      var recipes = body.hits;
-      console.log('Recipes: ' + recipes);
-      var ingredientes = Utils.getIngredients(recipes[0]);
-      //console.log(ingredientes);
+    }
 
-      for (let i = 0; i < ingredientes.length; i++) {
-        try {
-          addToList(handlerInput, ingredientes[i]);
-          console.log('Success!');
-        } catch (e) {
-          console.log('Didnt add: ' + ingredientes[i] + ' ' + e);
-        }
-      }
-    });
+    console.log(recipeUrl);
 
-    // await addToList(handlerInput,dish);
     return handlerInput.responseBuilder
-      .speak('Ingredients added!')
+      .speak(recipeLabel + " added to the shopping list.")
+      .withSimpleCard(recipeLabel, recipeUrl)
       .getResponse();
 
   },
 };
 
-const TopToDoHandler = {
+const ResetPreferencesIntentHandler = {
   canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest' && request.intent.name === 'TopToDoIntent';
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'ResetPreferencesIntent';
   },
   async handle(handlerInput) {
-    const responseBuilder = handlerInput.responseBuilder;
+    const attributesManager = handlerInput.attributesManager;
+    
+    var sessionAtt = await attributesManager.getSessionAttributes();
+    sessionAtt[C.RESET] = C.YES;
 
-    let speechOutput;
-    console.log('Starting top todo handler');
-    const itemName = await getTopToDoItem(handlerInput);
-    if (!itemName) {
-      speechOutput = 'Alexa List permissions are missing. You can grant permissions within the Alexa app.';
-      const permissions = ['read::alexa:household:list'];
-      return responseBuilder
-        .speak(speechOutput)
-        .withAskForPermissionsConsentCard(permissions)
-        .getResponse();
-    } else if (itemName === listIsEmpty) {
-      speechOutput = 'Your todo list is empty.';
-      return responseBuilder
-        .speak(speechOutput)
-        .getResponse();
-    }
-    speechOutput = 'Your top todo is ${itemName}.';
+    attributesManager.setPersistentAttributes(sessionAtt);
+    await attributesManager.savePersistentAttributes();
 
-    return responseBuilder
-      .speak('Success')
+    return handlerInput.responseBuilder
+      .speak('Preferences reset. Launch the app to set them again.')
       .getResponse();
+
   },
 };
 
@@ -136,14 +239,16 @@ const CancelAndStopIntentHandler = {
   async handle(handlerInput) {
     const speechText = 'Goodbye!';
 
-    
     const attributesManager = handlerInput.attributesManager;
     const sessionAttributes = attributesManager.getSessionAttributes();
+    console.log(sessionAttributes);
     attributesManager.setPersistentAttributes(sessionAttributes);
     await attributesManager.savePersistentAttributes();
+    console.log('saved');
 
     return handlerInput.responseBuilder
       .speak(speechText)
+      .getResponse()
   },
 };
 
@@ -206,7 +311,7 @@ async function getListId(handlerInput, listEndsWith) {
   return listId; // sessionAttributes.todoListId;
 }
 
-async function addToList(handlerInput, item) {
+async function addToList(handlerInput, item, label) {
   console.log("addToList: starting");
 
   const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
@@ -216,34 +321,16 @@ async function addToList(handlerInput, item) {
   if (!list) {
     console.log("addToList: List doesn't exist!");
     return null;
-  } else if (!list.items || list.items.length === 0) {
-    console.log("addToList: List is empty!");
-    return (listIsEmpty);
-  }
-  console.log("Trying to add: " + item);
+  } 
+
+  item += ' (' + label + ')';
+  //console.log("Trying to add: " + item);
   const updateRequest = {
     value: item,
     status: listStatuses.ACTIVE,
   };
 
   listClient.createListItem(listId, updateRequest);
-
-}
-
-async function getTopToDoItem(handlerInput) {
-  const listClient = handlerInput.serviceClientFactory.getListManagementServiceClient();
-  const listId = await getListId(handlerInput, 'ITEM');
-  console.log(`listid: ${listId}`);
-  const list = await listClient.getList(listId, listStatuses.ACTIVE);
-  if (!list) {
-    console.log('null list');
-    return null;
-  } else if (!list.items || list.items.length === 0) {
-    console.log('empty list');
-    return listIsEmpty;
-  }
-  console.log(`list item found: ${list.items[0].value} with id: ${list.items[0].id}`);
-  return list.items[0].value;
 }
 
 //exports
@@ -252,11 +339,13 @@ const skillBuilder = Alexa.SkillBuilders.standard();
 exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
-    TopToDoHandler,
     AddDishIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
-    SessionEndedRequestHandler
+    SessionEndedRequestHandler,
+    DontEatIntentHandler,
+    YesNoIntentHandler,
+    ResetPreferencesIntentHandler
   )
   .addErrorHandlers(ErrorHandler)
   .withTableName('FoodPreferences')

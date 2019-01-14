@@ -10,7 +10,7 @@
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "e8ee6a1f0f3cd2af6c56541d913b785b"
+            "eTag": "5912e8d6a1ea25ca5d2001c8ef0bfc71"
           }
         },
         "lambda": [
@@ -23,7 +23,7 @@
             "codeUri": "lambda/us-east-1_aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U",
             "functionName": "aws-serverless-repository-alexaskillskitnodejsfact-MRF40GS1CG4U",
             "handler": "index.handler",
-            "revisionId": "16a19cc3-e459-45ce-83b3-15bf40f12e2d",
+            "revisionId": "8ecfed92-dde6-44c5-9afb-f1ba6650ba19",
             "runtime": "nodejs8.10"
           }
         ]

@@ -1,19 +1,33 @@
 //API description: https://developer.edamam.com/edamam-docs-recipe-api
-export const APP_KEY = '0d12679d81b972f4f143f006ef3e2217';
-export const APP_ID = 'c0991d62';
 
-export const INGREDIENTS_ID = 1;
-export const DIET_ID = 2;
-export const HEALTH_ID = 3;
-export const CALORIES_ID = 4;
-export const TIME_ID = 5;
-export const EXCLUDED_ID = 6;
+module.exports = Object.freeze({
+    APP_KEY: '0d12679d81b972f4f143f006ef3e2217',
+    APP_ID: 'c0991d62',
 
-export const INGREDIENTS_ID = 'ingr';
-export const DIET_ID = 'diet';
-export const HEALTH_ID = 'health';
-export const CALORIES_ID = 'calories';
-export const TIME_ID = 'time';
-export const EXCLUDED_ID = 'excluded';
+    API_PATH: 'api.edamam.com',
 
-export const QUESTION_NR = 'qustion_nr';
+    YES:'yes',
+    NO: 'no',
+
+    INGREDIENTS : 'ingr',
+    DIET : 'diet',
+    HEALTH : 'health',
+    CALORIES : 'calories',
+    TIME : 'time',
+    EXCLUDED : 'excluded',
+    
+    //health
+    VEGETARIAN: 'vegetarian',
+    VEGAN: 'vegan',
+    ALCHOHOL_FREE: 'alcohol-free',
+    NUTS_FREE: 'tree-nut-free',
+    SUGAR_LESS: 'sugar-conscious',
+    PEANUTS_FREE: 'peanut-free',
+
+    //progress
+    FEEL_LUCKY: 'lucky',
+    RESET: 'reset',
+    QUESTION_NR : 'question_nr',
+    QUESTION_TOTAL: 7,
+    QUESTIONS: ['Are you vegetarian?','Are you vegan?','Do you drink alchohol?', 'Are you alergic to nuts?','Do you prefer food with less sugar?','Are you alergic to peanuts?','Do you feel lucky?','Are there some ingredients you do not eat?']
+});
